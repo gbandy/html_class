@@ -1,115 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Custom Form and Scatterplot Visualization</title>
+  <title>Multi-Dimensional Scatterplot</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
     }
 
-    form {
+    #form-container {
       margin-bottom: 20px;
     }
 
-    .form-group {
-      margin-bottom: 10px;
-    }
-
-    #chart_div {
+    #scatter-plot-container {
       width: 100%;
       height: 600px;
     }
   </style>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-  <h1>Custom Form and Scatterplot Visualization</h1>
+  <div id="form-container">
+    <h2>Input Data</h2>
+    <div id="input-fields"></div>
+    <button onclick="generateScatterPlot()">Generate Scatterplot</button>
+  </div>
 
-  <form id="form">
-    <div class="form-group">
-      <label for="x1">X1:</label>
-      <input type="number" id="x1" name="x1" required>
-    </div>
-    <div class="form-group">
-      <label for="y1">Y1:</label>
-      <input type="number" id="y1" name="y1" required>
-    </div>
-    <div class="form-group">
-      <label for="size1">Size1:</label>
-      <input type="number" id="size1" name="size1" required>
-    </div>
-    <div class="form-group">
-      <label for="x2">X2:</label>
-      <input type="number" id="x2" name="x2" required>
-    </div>
-    <div class="form-group">
-      <label for="y2">Y2:</label>
-      <input type="number" id="y2" name="y2" required>
-    </div>
-    <div class="form-group">
-      <label for="size2">Size2:</label>
-      <input type="number" id="size2" name="size2" required>
-    </div>
-    <div class="form-group">
-      <label for="x3">X3:</label>
-      <input type="number" id="x3" name="x3" required>
-    </div>
-    <div class="form-group">
-      <label for="y3">Y3:</label>
-      <input type="number" id="y3" name="y3" required>
-    </div>
-    <div class="form-group">
-      <label for="size3">Size3:</label>
-      <input type="number" id="size3" name="size3" required>
-    </div>
-    <!-- Repeat the form groups for the remaining 13 dimensions -->
-    <button type="button" onclick="drawChart()">Generate Scatterplot</button>
-  </form>
+  <div id="scatter-plot-container">
+    <canvas id="scatter-plot"></canvas>
+  </div>
 
-  <div id="chart_div"></div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Generate input fields for 16 dimensions
+    const inputFields = document.getElementById("input-fields");
+    for (let i = 1; i <= 16; i++) {
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <label for="dimension-${i}">Dimension ${i}:</label>
+        <input type="text" id="dimension-${i}" placeholder="Enter 3 values separated by commas">
+      `;
+      inputFields.appendChild(div);
+    }
 
-  <script type="text/javascript">
-    google.charts.load('current', {'packages':['corechart']});
+    function generateScatterPlot() {
+      // Get the input values
+      const dimensionValues = [];
+      for (let i = 1; i <= 16; i++) {
+        const inputField = document.getElementById(`dimension-${i}`);
+        const values = inputField.value.split(",").map(Number);
+        dimensionValues.push(values);
+      }
 
-    function drawChart() {
-      var data = new google.visualization.DataTable();
-      data.addColumn('number', 'X1');
-      data.addColumn('number', 'Y1');
-      data.addColumn('number', 'Size1');
-      data.addColumn('number', 'X2');
-      data.addColumn('number', 'Y2');
-      data.addColumn('number', 'Size2');
-      data.addColumn('number', 'X3');
-      data.addColumn('number', 'Y3');
-      data.addColumn('number', 'Size3');
-      // Add the remaining 13 dimension columns
-
-      var x1 = document.getElementById("x1").value;
-      var y1 = document.getElementById("y1").value;
-      var size1 = document.getElementById("size1").value;
-      var x2 = document.getElementById("x2").value;
-      var y2 = document.getElementById("y2").value;
-      var size2 = document.getElementById("size2").value;
-      var x3 = document.getElementById("x3").value;
-      var y3 = document.getElementById("y3").value;
-      var size3 = document.getElementById("size3").value;
-      // Retrieve the values for the remaining 13 dimensions
-
-      data.addRow([x1, y1, size1, x2, y2, size2, x3, y3, size3]);
-      // Add the remaining 13 dimension values to the row
-
-      var options = {
-        title: 'Scatterplot with Bubble Size',
-        hAxis: {title: 'X-axis'},
-        vAxis: {title: 'Y-axis'},
-        bubble: {textStyle: {fontSize: 11}}
-      };
-
-      var chart = new google.visualization.BubbleChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
+      // Create the scatter plot
+      const ctx = document.getElementById("scatter-plot").getContext("2d");
+      new Chart(ctx, {
+        type: "scatter",
+        data: {
+          datasets: [
+            {
+              label: "Data Points",
+              data: dimensionValues.map((values, i) => ({
+                x: values[0],
+                y: values[1],
+                z: values[2],
+                index: i,
+              })),
+              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              borderColor: "rgba(75, 192, 192, 1)",
+              pointRadius: 5,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            x: {
+              type: "linear",
+              position: "bottom",
+            },
+            y: {
+              type: "linear",
+              position: "left",
+            },
+            z: {
+              type: "linear",
+              position: "right",
+            },
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: "Multi-Dimensional Scatterplot",
+            },
+          },
+        },
+      });
     }
   </script>
 </body>
 </html>
-  
