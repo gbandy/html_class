@@ -1,10 +1,115 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title> Hello Jess</title>
-  </head>
-  <body>
-    <h1>This is the landing page for your future web page. Pretty easy to do something simple. And its for free!!</h1>
-      </body>
-  </html>
+  <title>Custom Form and Scatterplot Visualization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    #chart_div {
+      width: 100%;
+      height: 600px;
+    }
+  </style>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+  <h1>Custom Form and Scatterplot Visualization</h1>
+
+  <form id="form">
+    <div class="form-group">
+      <label for="x1">X1:</label>
+      <input type="number" id="x1" name="x1" required>
+    </div>
+    <div class="form-group">
+      <label for="y1">Y1:</label>
+      <input type="number" id="y1" name="y1" required>
+    </div>
+    <div class="form-group">
+      <label for="size1">Size1:</label>
+      <input type="number" id="size1" name="size1" required>
+    </div>
+    <div class="form-group">
+      <label for="x2">X2:</label>
+      <input type="number" id="x2" name="x2" required>
+    </div>
+    <div class="form-group">
+      <label for="y2">Y2:</label>
+      <input type="number" id="y2" name="y2" required>
+    </div>
+    <div class="form-group">
+      <label for="size2">Size2:</label>
+      <input type="number" id="size2" name="size2" required>
+    </div>
+    <div class="form-group">
+      <label for="x3">X3:</label>
+      <input type="number" id="x3" name="x3" required>
+    </div>
+    <div class="form-group">
+      <label for="y3">Y3:</label>
+      <input type="number" id="y3" name="y3" required>
+    </div>
+    <div class="form-group">
+      <label for="size3">Size3:</label>
+      <input type="number" id="size3" name="size3" required>
+    </div>
+    <!-- Repeat the form groups for the remaining 13 dimensions -->
+    <button type="button" onclick="drawChart()">Generate Scatterplot</button>
+  </form>
+
+  <div id="chart_div"></div>
+
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('number', 'X1');
+      data.addColumn('number', 'Y1');
+      data.addColumn('number', 'Size1');
+      data.addColumn('number', 'X2');
+      data.addColumn('number', 'Y2');
+      data.addColumn('number', 'Size2');
+      data.addColumn('number', 'X3');
+      data.addColumn('number', 'Y3');
+      data.addColumn('number', 'Size3');
+      // Add the remaining 13 dimension columns
+
+      var x1 = document.getElementById("x1").value;
+      var y1 = document.getElementById("y1").value;
+      var size1 = document.getElementById("size1").value;
+      var x2 = document.getElementById("x2").value;
+      var y2 = document.getElementById("y2").value;
+      var size2 = document.getElementById("size2").value;
+      var x3 = document.getElementById("x3").value;
+      var y3 = document.getElementById("y3").value;
+      var size3 = document.getElementById("size3").value;
+      // Retrieve the values for the remaining 13 dimensions
+
+      data.addRow([x1, y1, size1, x2, y2, size2, x3, y3, size3]);
+      // Add the remaining 13 dimension values to the row
+
+      var options = {
+        title: 'Scatterplot with Bubble Size',
+        hAxis: {title: 'X-axis'},
+        vAxis: {title: 'Y-axis'},
+        bubble: {textStyle: {fontSize: 11}}
+      };
+
+      var chart = new google.visualization.BubbleChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+  </script>
+</body>
+</html>
   
